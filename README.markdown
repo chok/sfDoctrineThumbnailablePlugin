@@ -160,6 +160,11 @@ should points to a directory relative to the image's ``dirname``.
 The ``path_method`` allows you to specify an object method name, which will return the 
 absolute file path to the picture file.
 
+The ``quality`` setting allows you to specify the compression level (0 to 100)
+you want for the resulting jpg files. It can be specified globally, for each field
+or for each format (with WidthxHeightxQuality).
+If not set, it will use sfThumbnail's default value of 75.
+
     [yml]
     Media:
       actAs:
@@ -168,11 +173,13 @@ absolute file path to the picture file.
           on_save: true
           default: image
           path_method: get%sPath
+          quality: 75
           fields:
             image:
+              quality: 50
               formats:
                 homepage: 50x50
-                body: 300x300
+                body: 300x300x90
                 default: body
             alternate:
               formats:
