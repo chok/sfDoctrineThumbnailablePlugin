@@ -251,18 +251,27 @@ class Thumbnailable extends Doctrine_Template
    * Actually creates the thumbnail
    *
    * @param string $field
-   * @param string $format ${width}x${height}
+   * @param string $format ${width}x${height}x${quality}
    *
    * @see sfThumbnail::save
    *
    * @todo test
    *
    * @return boolean
+   * @since 2011-05-30 cyrillej (add support for quality)
    */
   public function createThumbnail($field, $format)
   {
-    list($width, $height) = explode('x', $format);
-    $thumbnail = new sfThumbnail($width, $height);
+    $format_info = explode('x', $format);
+    if (3 == count($format_info))
+    {
+      list($width, $height, $quality) = $format_info;
+    }
+    else
+    {
+      list($width, $height) = $format_info;
+    }
+    $thumbnail = new sfThumbnail($width, $height, true, true, isset($quality) ? $quality : $this->getOption('quality', $field));
     $thumbnail->loadFile($this->getFilePath($field));
 
     $thumbnail_path = $this->getThumbnailPath($field, $format);
