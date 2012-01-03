@@ -241,7 +241,21 @@ class Thumbnailable extends Doctrine_Template
         throw new sfException(sprintf('Format "%s" is not allowed in formats list', $format));
       }
 
-      $this->createThumbnail($field, $format);
+      try
+      {
+        $this->createThumbnail($field, $format);
+      }
+      catch (Exception $e)
+      {
+        if ($this->getOption('fail_silently', $field))
+        {
+          return '#';
+        }
+        else
+        {
+          throw $e;
+        }
+      }
     }
 
     return call_user_func($this->getOption('path_to_url_method', $field), $this->getThumbnailPath($field, $format));
