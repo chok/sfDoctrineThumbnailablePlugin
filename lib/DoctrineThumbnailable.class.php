@@ -270,16 +270,21 @@ class Thumbnailable extends Doctrine_Template
     else
     {
       list($width, $height) = $format_info;
+      $quality = $this->getOption('quality', $field);
     }
     
+    $adapter_class = $this->getOption('adapter_class', $field);    
     $adapter_options = $this->getOption('adapter_options', $field);
-    
+      
     if (!$adapter_options)
     {
       $adapter_options = array();  
     }
-    
-    $thumbnail = new sfThumbnail($width, $height, true, true, isset($quality) ? $quality : $this->getOption('quality', $field), $this->getOption('adapter_class', $field), $adapter_options);
+
+    $thumbnail = is_integer($quality)
+      ? new sfThumbnail($width, $height, true, true, $quality, $adapter_class, $adapter_options)
+      : new sfThumbnail($width, $height, true, true, 75, $adapter_class, $adapter_options);
+
     $thumbnail->loadFile($this->getFilePath($field));
 
     $thumbnail_path = $this->getThumbnailPath($field, $format);
